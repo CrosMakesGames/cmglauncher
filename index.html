@@ -31,18 +31,18 @@
             image-rendering: pixelated;
         }
 
-        /* ===== LITTLE LAUNCHER BUBBLES ===== */
+        /* ===== SMALL LAUNCHER BUBBLES ===== */
         .game-bubble {
             position: relative;
             aspect-ratio: 1;
-            border: 3px solid #000;
-            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+            border: 2px solid #000;
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 12px;
+            padding: 8px;
             transition: all 0.2s ease;
             text-decoration: none;
             overflow: hidden;
@@ -50,11 +50,11 @@
 
         .game-bubble:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
         }
 
         .game-bubble:active {
-            transform: translate(2px, 2px);
+            transform: translate(1px, 1px);
             box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
         }
 
@@ -70,23 +70,23 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
+            height: 4px;
             background: var(--bubble-color);
         }
 
         .bubble-title {
             font-family: 'Press Start 2P', cursive;
-            font-size: 9px;
+            font-size: 8px;
             line-height: 1.4;
             color: #000;
-            margin-bottom: 8px;
-            margin-top: 6px;
+            margin-bottom: 6px;
+            margin-top: 5px;
             z-index: 2;
         }
 
         .bubble-desc {
-            font-size: 11px;
-            line-height: 1.45;
+            font-size: 10px;
+            line-height: 1.4;
             color: #444;
             flex-grow: 1;
             display: flex;
@@ -96,13 +96,13 @@
 
         .bubble-button {
             font-family: 'Press Start 2P', cursive;
-            font-size: 7px;
-            padding: 5px 10px;
+            font-size: 6px;
+            padding: 4px 8px;
             border: 2px solid #000;
             background: var(--bubble-color);
             color: #000;
             box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
-            margin-top: 8px;
+            margin-top: 6px;
             z-index: 2;
             transition: all 0.15s;
         }
@@ -224,7 +224,7 @@
         <span class="line"></span>
     </div>
 
-    <div id="bubbles-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-12">
+    <div id="bubbles-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
     </div>
 
     <!-- ===== OTHER SITE ===== -->
@@ -262,15 +262,17 @@ const LAUNCHER_ITEMS = [
         "link": "https://crosmakesgames.com/",
         "button": "Visit",
         "color": "#FF5C5C"
-    },
+    }
 ];
 
 // ===== FETCH THE SITE'S CODE =====
 // Try a direct fetch first; if CORS blocks it, retry through public proxies.
+// Pure JS fetch — no third-party APIs or proxies.
+// NOTE: verified 9/9/26 — both target sites send Access-Control-Allow-Origin: *,
+// so a direct cross-origin fetch works. If a site blocks CORS, the launcher
+// falls back to opening it directly in the new tab.
 const FETCH_SOURCES = [
-    (url) => url,
-    (url) => "https://corsproxy.io/?url=" + encodeURIComponent(url),
-    (url) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(url)
+    (url) => url
 ];
 
 async function fetchSiteCode(url) {
@@ -289,32 +291,95 @@ async function fetchSiteCode(url) {
     throw lastError || new Error("could not fetch site");
 }
 
-// ===== RUN THE CODE INSIDE about:blank =====
-// Inject a <base> tag so all relative assets/links on the site still resolve
-// against its real domain, then write the whole page into a fresh about:blank tab.
-function withBaseTag(html, url) {
+// ===== PATCH THE CODE BEFORE RUNNING IT =====
+// 1. <base> tag so every relative asset/link on the site resolves against its real domain.
+// 2. Service worker stub — SW registration always fails inside about:blank (scope is not
+//    same-origin with the client), and some sites treat that as fatal. This makes
+//    register() report success so the site keeps running.
+// 3. Strip CSP <meta> tags from the fetched code so they can't block the page in its new home.
+function patchSiteCode(html, url) {
     const base = `<base href="${url}">`;
+
+    const swStub = `<script>
+(function () {
+    try {
+        var fake = {
+            scope: "/",
+            active: null,
+            installing: null,
+            waiting: null,
+            pushManager: {
+                getSubscription: function () { return Promise.resolve(null); },
+                permissionState: function () { return Promise.resolve("denied"); }
+            },
+            unregister: function () { return Promise.resolve(true); },
+            update: function () { return Promise.resolve(); }
+        };
+        if (!("serviceWorker" in navigator)) {
+            Object.defineProperty(navigator, "serviceWorker", { value: {}, configurable: true });
+        }
+        var sw = navigator.serviceWorker;
+        sw.register = function () { return Promise.resolve(fake); };
+        sw.getRegistration = function () { return Promise.resolve(fake); };
+        sw.getRegistrations = function () { return Promise.resolve([fake]); };
+        if (sw.addEventListener) sw.addEventListener = function () {};
+        try { sw.ready = Promise.resolve(fake); } catch (e) {}
+    } catch (e) {}
+})();
+<\/script>`;
+
+    // strip CSP meta tags — they break scripts/styles in the about:blank document
+    html = html.replace(/<meta[^>]+http-equiv\s*=\s*["']?content-security-policy["']?[^>]*>/gi, "");
+
+    const prelude = base + swStub;
     if (/<head[^>]*>/i.test(html)) {
-        return html.replace(/<head[^>]*>/i, (m) => m + base);
+        return html.replace(/<head[^>]*>/i, (m) => m + prelude);
     }
     if (/<html[^>]*>/i.test(html)) {
-        return html.replace(/<html[^>]*>/i, (m) => m + "<head>" + base + "</head>");
+        return html.replace(/<html[^>]*>/i, (m) => m + "<head>" + prelude + "</head>");
     }
-    return base + html;
+    return prelude + html;
 }
 
-function writeToAboutBlank(html) {
+// ===== OPEN THE NEW TAB =====
+// CRITICAL: this must run SYNCHRONOUSLY inside the click handler (before any await).
+// If we open the tab after fetching, the browser no longer sees a user gesture,
+// blocks the popup, and things go wrong. We also verify the browser actually gave
+// us a NEW window — never write into the launcher's own page.
+function openNewTab(url) {
     const win = window.open("about:blank", "_blank");
-    if (!win) throw new Error("popup blocked — allow popups for this page");
+    if (!win || win === window || !win.document) {
+        alert("Popup blocked! Allow popups for this page, then try again.");
+        return null;
+    }
+    // themed loading page while we grab the code
     win.document.open();
-    win.document.write(html);
+    win.document.write(
+        '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Loading...</title>' +
+        '<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">' +
+        '<style>body{background:#FDFBF7;display:flex;align-items:center;justify-content:center;' +
+        'height:100vh;margin:0;font-family:JetBrains Mono,monospace;color:#000;}' +
+        '.box{border:3px solid #000;box-shadow:5px 5px 0px 0px rgba(0,0,0,1);padding:20px 30px;' +
+        'background:#FFD166;font-weight:700;word-break:break-all;max-width:80%;}</style></head>' +
+        '<body><div class="box">LOADING ' + url + " ...</div></body></html>"
+    );
     win.document.close();
     return win;
 }
 
 async function launchSite(url) {
-    const code = await fetchSiteCode(url);
-    writeToAboutBlank(withBaseTag(code, url));
+    const win = openNewTab(url); // must happen first, in the click
+    if (!win) return;
+
+    try {
+        const code = await fetchSiteCode(url);
+        win.document.open();
+        win.document.write(patchSiteCode(code, url));
+        win.document.close();
+    } catch (err) {
+        // couldn't grab the code — send the NEW tab (not this page) to the site directly
+        try { win.location.href = url; } catch (e) {}
+    }
 }
 
 // ===== RENDER =====
@@ -332,20 +397,16 @@ LAUNCHER_ITEMS.forEach((p) => {
         <span class="bubble-button">${p.button} &rarr;</span>
     `;
 
-    card.addEventListener('click', async (e) => {
+    card.addEventListener('click', (e) => {
         e.preventDefault();
         const btn = card.querySelector('.bubble-button');
         const original = btn.innerHTML;
         card.classList.add('loading');
         btn.innerHTML = "LOADING...";
-        try {
-            await launchSite(p.link);
-        } catch (err) {
-            // couldn't grab the code — open the site directly instead
-            window.open(p.link, "_blank");
-        }
-        card.classList.remove('loading');
-        btn.innerHTML = original;
+        launchSite(p.link).finally(() => {
+            card.classList.remove('loading');
+            btn.innerHTML = original;
+        });
     });
 
     bubbleContainer.appendChild(card);
@@ -357,7 +418,7 @@ document.getElementById('section-title').textContent = "launchers (" + LAUNCHER_
 const siteInput = document.getElementById('site-input');
 const testBtn = document.getElementById('test-btn');
 
-async function testSite() {
+function testSite() {
     let url = siteInput.value.trim();
     if (!url) return;
     if (!/^https?:\/\//i.test(url)) url = "https://" + url;
@@ -365,14 +426,10 @@ async function testSite() {
     const original = testBtn.textContent;
     testBtn.disabled = true;
     testBtn.textContent = "LOADING...";
-    try {
-        await launchSite(url);
-    } catch (err) {
-        alert("Couldn't fetch that site (" + err.message + ").\nOpening it directly instead...");
-        window.open(url, "_blank");
-    }
-    testBtn.disabled = false;
-    testBtn.textContent = original;
+    launchSite(url).finally(() => {
+        testBtn.disabled = false;
+        testBtn.textContent = original;
+    });
 }
 
 testBtn.addEventListener('click', testSite);
