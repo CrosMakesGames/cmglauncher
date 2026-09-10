@@ -1,202 +1,345 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>CMG Launcher</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 
     <style>
+
         body, p, a, span, li, button {
+
             font-family: 'JetBrains Mono', monospace;
+
         }
 
         h1, h2, h3 {
+
             font-family: 'JetBrains Mono', monospace;
+
             font-weight: 800;
+
             line-height: 1.4;
+
         }
 
         .pixel-font {
+
             font-family: 'Press Start 2P', cursive;
+
         }
 
         .pixelated-img {
+
             image-rendering: pixelated;
+
         }
 
         /* ===== SMALL LAUNCHER BUBBLES ===== */
+
         .game-bubble {
+
             position: relative;
+
             aspect-ratio: 1;
+
             border: 2px solid #000;
+
             box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             text-align: center;
+
             padding: 8px;
+
             transition: all 0.2s ease;
+
             text-decoration: none;
+
             overflow: hidden;
+
         }
 
         .game-bubble:hover {
+
             transform: translate(-2px, -2px);
+
             box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+
         }
 
         .game-bubble:active {
+
             transform: translate(1px, 1px);
+
             box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
         }
 
         .game-bubble.loading {
+
             filter: grayscale(0.6);
+
             pointer-events: none;
+
         }
 
         /* Top color stripe */
+
         .game-bubble::before {
+
             content: '';
+
             position: absolute;
+
             top: 0;
+
             left: 0;
+
             right: 0;
+
             height: 4px;
+
             background: var(--bubble-color);
+
         }
 
         .bubble-title {
+
             font-family: 'Press Start 2P', cursive;
+
             font-size: 8px;
+
             line-height: 1.4;
+
             color: #000;
+
             margin-bottom: 6px;
+
             margin-top: 5px;
+
             z-index: 2;
+
         }
 
         .bubble-desc {
+
             font-size: 10px;
+
             line-height: 1.4;
+
             color: #444;
+
             flex-grow: 1;
+
             display: flex;
+
             align-items: center;
+
             z-index: 2;
+
         }
 
         .bubble-button {
+
             font-family: 'Press Start 2P', cursive;
+
             font-size: 6px;
+
             padding: 4px 8px;
+
             border: 2px solid #000;
+
             background: var(--bubble-color);
+
             color: #000;
+
             box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+
             margin-top: 6px;
+
             z-index: 2;
+
             transition: all 0.15s;
+
         }
 
         .game-bubble:hover .bubble-button {
+
             box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+
         }
 
         /* ===== OTHER SITE INPUT ===== */
+
         .site-input {
+
             font-family: 'JetBrains Mono', monospace;
+
             font-weight: 500;
+
             font-size: 14px;
+
             padding: 10px 14px;
+
             border: 3px solid #000;
+
             background: #fff;
+
             color: #000;
+
             box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
             outline: none;
+
             flex: 1;
+
             min-width: 0;
+
         }
 
         .site-input:focus {
+
             background: #FFF8E1;
+
         }
 
         .site-input::placeholder {
+
             color: #aaa;
+
         }
 
         .test-btn {
+
             font-family: 'JetBrains Mono', monospace;
+
             font-weight: 800;
+
             font-size: 14px;
+
             text-transform: uppercase;
+
             letter-spacing: 0.5px;
+
             padding: 10px 22px;
+
             border: 3px solid #000;
+
             background: #FFD166;
+
             color: #000;
+
             box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
             cursor: pointer;
+
             transition: all 0.15s ease;
+
             flex-shrink: 0;
+
         }
 
         .test-btn:hover {
+
             background: #FFDD80;
+
             transform: translate(-2px, -2px);
+
             box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+
         }
 
         .test-btn:active {
+
             transform: translate(2px, 2px);
+
             box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
         }
 
         .test-btn:disabled {
+
             filter: grayscale(0.6);
+
             pointer-events: none;
+
         }
 
         /* Section divider */
+
         .section-divider {
+
             display: flex;
+
             align-items: center;
+
             gap: 16px;
+
             margin: 32px 0 24px;
+
         }
 
         .section-divider .line {
+
             flex: 1;
+
             height: 3px;
+
             background: #000;
+
             border-radius: 2px;
+
         }
 
         .section-divider .dot {
+
             width: 12px;
+
             height: 12px;
+
             border-radius: 50%;
+
             background: #000;
+
         }
 
         @keyframes float {
+
             0%, 100% { transform: translateY(0); }
+
             50% { transform: translateY(-8px); }
+
         }
 
         .float-anim {
+
             animation: float 4s ease-in-out infinite;
+
         }
+
     </style>
+
 </head>
 
 <body class="bg-[#FDFBF7] text-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -204,238 +347,537 @@
 <div class="max-w-5xl mx-auto">
 
     <!-- ===== HEADER ===== -->
+
     <header class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
+
         <img src="https://crosmakesgames.com/logo.png"
+
              alt="CMG Logo"
+
              class="w-36 sm:w-28 md:w-40 object-contain pixelated-img float-anim flex-shrink-0"
+
              onerror="this.style.display='none'">
+
         <div class="flex-1 flex flex-col justify-center gap-4 pt-2 w-full">
+
             <h1 class="text-lg sm:text-xl md:text-2xl text-black">CMG Launcher</h1>
+
             <p class="text-gray-800 text-sm leading-relaxed">
+
                 A simple launcher for my games and other sites. Click a bubble to load the site in a new tab, or test your own site below.
+
             </p>
+
         </div>
+
     </header>
 
     <!-- ===== LAUNCHER ===== -->
+
     <div class="section-divider">
+
         <span class="dot"></span>
+
         <h2 class="text-sm sm:text-base text-black whitespace-nowrap" id="section-title">launchers</h2>
+
         <span class="line"></span>
+
     </div>
 
     <div id="bubbles-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
+
     </div>
 
     <!-- ===== OTHER SITE ===== -->
+
     <div class="section-divider">
+
         <span class="dot"></span>
+
         <h2 class="text-sm sm:text-base text-black whitespace-nowrap">other site?</h2>
+
         <span class="line"></span>
+
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 mb-12 items-stretch">
+
         <input type="text" id="site-input" class="site-input" placeholder="https://example.com" spellcheck="false" autocomplete="off">
+
         <button class="test-btn" id="test-btn">Test &rarr;</button>
+
     </div>
 
     <!-- ===== FOOTER ===== -->
+
     <footer class="pt-8 mt-8 border-t-4 border-black text-center text-black font-medium">
+
         CMG Launcher by <a href="https://crosmakesgames.com/" target="_blank" class="font-bold underline decoration-2 underline-offset-2 hover:text-[#FF5C5C]">CrosMakesGames</a>. &copy; 2026.
+
     </footer>
 
 </div>
 
 <script>
-// ===== LAUNCHER DATA — edit this JSON to add/remove items =====
+"use strict";
+
+// ============================================================
+// CMG LAUNCHER — ABOUT:BLANK SOURCE LAUNCHER
+// ============================================================
+
 const LAUNCHER_ITEMS = [
     {
-        "title": "CMG WEB IDE",
-        "description": "WIP- code in the web WITH a interpreter for static and love2d.",
-        "link": "https://webide.crosmakesgames.com/",
-        "button": "Go",
-        "color": "#41ADAB"
+        title: "CMG WEB IDE",
+        description: "WIP- code in the web WITH a interpreter for static and love2d.",
+        link: "https://crosmakesgames.com/webide/",
+        button: "Go",
+        color: "#41ADAB"
     },
     {
-        "title": "crosmakesgames.com",
-        "description": "My homepages",
-        "link": "https://crosmakesgames.com/",
-        "button": "Visit",
-        "color": "#FF5C5C"
+        title: "crosmakesgames.com",
+        description: "My homepages",
+        link: "https://crosmakesgames.com/",
+        button: "Visit",
+        color: "#FF5C5C"
     }
 ];
 
-// ===== FETCH THE SITE'S CODE =====
-// Try a direct fetch first; if CORS blocks it, retry through public proxies.
-// Pure JS fetch — no third-party APIs or proxies.
-// NOTE: verified 9/9/26 — both target sites send Access-Control-Allow-Origin: *,
-// so a direct cross-origin fetch works. If a site blocks CORS, the launcher
-// falls back to opening it directly in the new tab.
+// Direct fetch, exactly like Horion.
+// The destination must permit CORS for this to work from the launcher.
 const FETCH_SOURCES = [
-    (url) => url
+    async (url) => {
+        const response = await fetch(url, {
+            method: "GET",
+            mode: "cors",
+            credentials: "omit",
+            cache: "no-store",
+            redirect: "follow"
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} ${response.statusText || ""}`.trim());
+        }
+
+        const text = await response.text();
+
+        if (!text || !text.trim()) {
+            throw new Error("The site returned an empty document.");
+        }
+
+        return text;
+    }
 ];
 
-async function fetchSiteCode(url) {
-    let lastError;
-    for (const makeUrl of FETCH_SOURCES) {
-        try {
-            const res = await fetch(makeUrl(url));
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const text = await res.text();
-            if (text && text.trim().length > 0) return text;
-            throw new Error("empty response");
-        } catch (err) {
-            lastError = err;
-        }
-    }
-    throw lastError || new Error("could not fetch site");
+function setStatus(message, isError = false) {
+    const el = document.getElementById("launcher-status");
+    if (!el) return;
+
+    el.textContent = message;
+    el.classList.toggle("error", isError);
 }
 
-// ===== PATCH THE CODE BEFORE RUNNING IT =====
-// 1. <base> tag so every relative asset/link on the site resolves against its real domain.
-// 2. Service worker stub — SW registration always fails inside about:blank (scope is not
-//    same-origin with the client), and some sites treat that as fatal. This makes
-//    register() report success so the site keeps running.
-// 3. Strip CSP <meta> tags from the fetched code so they can't block the page in its new home.
-function patchSiteCode(html, url) {
-    const base = `<base href="${url}">`;
+function normalizeUrl(value) {
+    let url = String(value || "").trim();
 
-    const swStub = `<script>
+    if (!url) {
+        throw new Error("No URL was entered.");
+    }
+
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+    }
+
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error("Only HTTP and HTTPS URLs are supported.");
+    }
+
+    return parsed.href;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// Fetch the actual HTML source.
+async function fetchSiteCode(url) {
+    let lastError = null;
+
+    for (const fetchSource of FETCH_SOURCES) {
+        try {
+            return await fetchSource(url);
+        } catch (error) {
+            lastError = error;
+        }
+    }
+
+    throw lastError || new Error("Unable to fetch the site.");
+}
+
+// Inject a small compatibility layer before the site's own scripts.
+// This prevents many sites from dying immediately when moved from their
+// original origin into about:blank.
+function buildCompatibilityPrelude() {
+    return `
+<script>
 (function () {
+    "use strict";
+
+    // Some applications attempt to register a Service Worker.
+    // A worker cannot normally be registered for an about:blank document,
+    // so provide a harmless compatibility object instead.
     try {
-        var fake = {
+        var fakeRegistration = {
             scope: "/",
             active: null,
             installing: null,
             waiting: null,
             pushManager: {
-                getSubscription: function () { return Promise.resolve(null); },
-                permissionState: function () { return Promise.resolve("denied"); }
+                getSubscription: function () {
+                    return Promise.resolve(null);
+                },
+                permissionState: function () {
+                    return Promise.resolve("denied");
+                }
             },
-            unregister: function () { return Promise.resolve(true); },
-            update: function () { return Promise.resolve(); }
+            unregister: function () {
+                return Promise.resolve(true);
+            },
+            update: function () {
+                return Promise.resolve();
+            }
         };
-        if (!("serviceWorker" in navigator)) {
-            Object.defineProperty(navigator, "serviceWorker", { value: {}, configurable: true });
+
+        if (!navigator.serviceWorker) {
+            try {
+                Object.defineProperty(navigator, "serviceWorker", {
+                    configurable: true,
+                    value: {}
+                });
+            } catch (_) {}
         }
+
         var sw = navigator.serviceWorker;
-        sw.register = function () { return Promise.resolve(fake); };
-        sw.getRegistration = function () { return Promise.resolve(fake); };
-        sw.getRegistrations = function () { return Promise.resolve([fake]); };
-        if (sw.addEventListener) sw.addEventListener = function () {};
-        try { sw.ready = Promise.resolve(fake); } catch (e) {}
-    } catch (e) {}
+
+        if (sw) {
+            try {
+                sw.register = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistration = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistrations = function () {
+                    return Promise.resolve([fakeRegistration]);
+                };
+            } catch (_) {}
+        }
+    } catch (_) {}
+
+    // about:blank has its own origin. These are best-effort compatibility
+    // shims for code that assumes it is running as a normal web document.
+    try {
+        if (!window.requestIdleCallback) {
+            window.requestIdleCallback = function (cb) {
+                return setTimeout(function () {
+                    cb({
+                        didTimeout: false,
+                        timeRemaining: function () { return 50; }
+                    });
+                }, 1);
+            };
+        }
+    } catch (_) {}
 })();
-<\/script>`;
-
-    // strip CSP meta tags — they break scripts/styles in the about:blank document
-    html = html.replace(/<meta[^>]+http-equiv\s*=\s*["']?content-security-policy["']?[^>]*>/gi, "");
-
-    const prelude = base + swStub;
-    if (/<head[^>]*>/i.test(html)) {
-        return html.replace(/<head[^>]*>/i, (m) => m + prelude);
-    }
-    if (/<html[^>]*>/i.test(html)) {
-        return html.replace(/<html[^>]*>/i, (m) => m + "<head>" + prelude + "</head>");
-    }
-    return prelude + html;
+<\/script>`.trim();
 }
 
-// ===== OPEN THE NEW TAB =====
-// CRITICAL: this must run SYNCHRONOUSLY inside the click handler (before any await).
-// If we open the tab after fetching, the browser no longer sees a user gesture,
-// blocks the popup, and things go wrong. We also verify the browser actually gave
-// us a NEW window — never write into the launcher's own page.
+// Remove document-level policies that belong to the original document.
+// HTTP response headers such as CSP/X-Frame-Options do not come across
+// when we inject the HTML ourselves, but CSP <meta> tags do.
+function stripBlockingMeta(html) {
+    return html
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*content-security-policy\s*["']?[^>]*>/gi, "")
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*x-frame-options\s*["']?[^>]*>/gi, "");
+}
+
+// Add a real <base> URL so relative scripts, stylesheets, images, media,
+// links, forms, etc. continue resolving against the source site.
+function patchSiteCode(html, targetUrl) {
+    html = String(html || "").replace(/^\uFEFF/, "");
+    html = stripBlockingMeta(html);
+
+    const baseHref = escapeHtml(targetUrl);
+    const prelude = `<base href="${baseHref}">\n${buildCompatibilityPrelude()}`;
+
+    if (/<head\b[^>]*>/i.test(html)) {
+        return html.replace(/<head\b[^>]*>/i, match => match + "\n" + prelude);
+    }
+
+    if (/<html\b[^>]*>/i.test(html)) {
+        return html.replace(
+            /<html\b[^>]*>/i,
+            match => match + "\n<head>\n" + prelude + "\n</head>"
+        );
+    }
+
+    return "<!DOCTYPE html><html><head>" + prelude + "</head><body>" + html + "</body></html>";
+}
+
+function writeLoadingPage(win, url) {
+    const safeUrl = escapeHtml(url);
+
+    win.document.open();
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CMG Launcher — Loading</title>
+<style>
+html,body{width:100%;height:100%;margin:0}
+body{background:#FDFBF7;display:flex;align-items:center;justify-content:center;
+font-family:"JetBrains Mono",monospace;color:#000}
+.box{border:3px solid #000;box-shadow:6px 6px 0 #000;background:#FFD166;
+padding:22px 28px;font-weight:800;max-width:min(80vw,800px);word-break:break-word}
+.small{font-size:12px;margin-top:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="box">
+    LOADING...
+    <div class="small">${safeUrl}</div>
+</div>
+</body>
+</html>`);
+    win.document.close();
+}
+
+// IMPORTANT:
+// window.open() happens before ANY await. This keeps the operation attached
+// to the user's click and avoids popup blockers.
 function openNewTab(url) {
     const win = window.open("about:blank", "_blank");
-    if (!win || win === window || !win.document) {
-        alert("Popup blocked! Allow popups for this page, then try again.");
+
+    if (!win || win === window) {
+        alert("Popup blocked! Allow popups for CMG Launcher and try again.");
         return null;
     }
-    // themed loading page while we grab the code
-    win.document.open();
-    win.document.write(
-        '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Loading...</title>' +
-        '<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">' +
-        '<style>body{background:#FDFBF7;display:flex;align-items:center;justify-content:center;' +
-        'height:100vh;margin:0;font-family:JetBrains Mono,monospace;color:#000;}' +
-        '.box{border:3px solid #000;box-shadow:5px 5px 0px 0px rgba(0,0,0,1);padding:20px 30px;' +
-        'background:#FFD166;font-weight:700;word-break:break-all;max-width:80%;}</style></head>' +
-        '<body><div class="box">LOADING ' + url + " ...</div></body></html>"
-    );
-    win.document.close();
+
+    try {
+        writeLoadingPage(win, url);
+    } catch (error) {
+        try { win.close(); } catch (_) {}
+        throw error;
+    }
+
     return win;
 }
 
 async function launchSite(url) {
-    const win = openNewTab(url); // must happen first, in the click
+    // OPEN ABOUT:BLANK FIRST — synchronously from the button click.
+    const win = openNewTab(url);
     if (!win) return;
 
     try {
+        // Fetch the site's source.
         const code = await fetchSiteCode(url);
+
+        // Patch relative URLs, service workers, CSP, etc.
+        const patchedCode = patchSiteCode(code, url);
+
+        // IMPORTANT:
+        // Write the source INTO the existing about:blank window.
+        // DO NOT navigate the window.
         win.document.open();
-        win.document.write(patchSiteCode(code, url));
+        win.document.write(patchedCode);
         win.document.close();
+
     } catch (err) {
-        // couldn't grab the code — send the NEW tab (not this page) to the site directly
-        try { win.location.href = url; } catch (e) {}
+        console.error("CMG Launcher fetch failed:", err);
+
+        // IMPORTANT:
+        // Do NOT fall back to:
+        //     win.location.href = url
+        //
+        // The window must remain about:blank.
+        win.document.open();
+        win.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>CMG Launcher Error</title>
+                <style>
+                    html, body {
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #FDFBF7;
+                        color: #000;
+                        font-family: monospace;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .box {
+                        max-width: 800px;
+                        margin: 20px;
+                        padding: 28px;
+                        border: 3px solid #000;
+                        box-shadow: 6px 6px 0 #000;
+                        background: #fff;
+                    }
+
+                    h1 {
+                        font-size: 18px;
+                    }
+
+                    p {
+                        line-height: 1.6;
+                        word-break: break-word;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="box">
+                    <h1>Unable to launch site</h1>
+                    <p>
+                        The site could not be fetched for about:blank injection.
+                    </p>
+                    <p>${escapeHtml(err.message || String(err))}</p>
+                    <p>Target: ${escapeHtml(url)}</p>
+                </div>
+            </body>
+            </html>
+        `);
+        win.document.close();
     }
 }
 
-// ===== RENDER =====
-const bubbleContainer = document.getElementById('bubbles-container');
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-LAUNCHER_ITEMS.forEach((p) => {
-    const card = document.createElement('a');
-    card.href = p.link; // kept as fallback (right-click / middle-click)
-    card.className = 'game-bubble bg-white';
-    card.style.setProperty('--bubble-color', p.color);
+// ============================================================
+// RENDER LAUNCHER BUTTONS
+// ============================================================
 
-    card.innerHTML = `
-        <div class="bubble-title">${p.title}</div>
-        <p class="bubble-desc">${p.description}</p>
-        <span class="bubble-button">${p.button} &rarr;</span>
-    `;
+const bubbleContainer = document.getElementById("bubbles-container");
 
-    card.addEventListener('click', (e) => {
-        e.preventDefault();
-        const btn = card.querySelector('.bubble-button');
-        const original = btn.innerHTML;
-        card.classList.add('loading');
-        btn.innerHTML = "LOADING...";
-        launchSite(p.link).finally(() => {
-            card.classList.remove('loading');
-            btn.innerHTML = original;
+LAUNCHER_ITEMS.forEach((item) => {
+    const card = document.createElement("a");
+
+    card.href = item.link;
+    card.className = "game-bubble bg-white";
+    card.style.setProperty("--bubble-color", item.color);
+
+    const title = document.createElement("div");
+    title.className = "bubble-title";
+    title.textContent = item.title;
+
+    const description = document.createElement("p");
+    description.className = "bubble-desc";
+    description.textContent = item.description;
+
+    const button = document.createElement("span");
+    button.className = "bubble-button";
+    button.textContent = item.button + " →";
+
+    card.append(title, description, button);
+
+    card.addEventListener("click", (event) => {
+        // Keep normal middle-click / Ctrl-click / Shift-click behavior.
+        if (
+            event.button !== 0 ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const original = button.textContent;
+
+        card.classList.add("loading");
+        button.textContent = "LOADING...";
+
+        launchSite(item.link).finally(() => {
+            card.classList.remove("loading");
+            button.textContent = original;
         });
     });
 
     bubbleContainer.appendChild(card);
 });
 
-document.getElementById('section-title').textContent = "launchers (" + LAUNCHER_ITEMS.length + ")";
+document.getElementById("section-title").textContent =
+    "launchers (" + LAUNCHER_ITEMS.length + ")";
 
-// ===== OTHER SITE INPUT =====
-const siteInput = document.getElementById('site-input');
-const testBtn = document.getElementById('test-btn');
+// ============================================================
+// OTHER SITE TESTER
+// ============================================================
 
-function testSite() {
-    let url = siteInput.value.trim();
-    if (!url) return;
-    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+const siteInput = document.getElementById("site-input");
+const testBtn = document.getElementById("test-btn");
+
+async function testSite() {
+    const value = siteInput.value.trim();
+
+    if (!value) {
+        siteInput.focus();
+        return;
+    }
 
     const original = testBtn.textContent;
+
     testBtn.disabled = true;
     testBtn.textContent = "LOADING...";
-    launchSite(url).finally(() => {
+
+    try {
+        await launchSite(value);
+    } finally {
         testBtn.disabled = false;
         testBtn.textContent = original;
-    });
+    }
 }
 
-testBtn.addEventListener('click', testSite);
-siteInput.addEventListener('keydown', (e) => {
-    if (e.key === "Enter") testSite();
+testBtn.addEventListener("click", testSite);
+
+siteInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        testSite();
+    }
 });
+
+siteInput.addEventListener("input", () => {
+    if (siteInput.value.trim()) {
+        setStatus("Ready to launch.");
+    }
+});
+
+setStatus("Ready to launch.");
 </script>
 
 </body>
