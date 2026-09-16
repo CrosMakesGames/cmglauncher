@@ -466,6 +466,13 @@ const WEB_GAMES = [
         link: "https://telatro.tomcat.sh/game",
         button: "Play",
         color: "#E63946"
+    },
+    {
+        title: "Slowroads",
+        description: "Endless procedural driving. Just you, the road, and the scenery.",
+        link: "https://cdn.jsdelivr.net/gh/CrosMakesGames/fastdrives@main/index.html",
+        button: "Play",
+        color: "#06D6A0"
     }
 ];
 
@@ -668,6 +675,27 @@ function buildCompatibilityPrelude() {
                     return Promise.resolve([fakeRegistration]);
                 };
             } catch (_) {}
+        }
+    } catch (_) {}
+
+    // history.pushState/replaceState throw a SecurityError in an
+    // about:blank document (opaque origin). Some SPAs (SvelteKit, React
+    // Router, etc.) call these during navigation and would crash. Wrap
+    // them so failed calls are swallowed instead of killing the app.
+    try {
+        var _pushState = history.pushState ? history.pushState.bind(history) : null;
+        var _replaceState = history.replaceState ? history.replaceState.bind(history) : null;
+
+        if (_pushState) {
+            history.pushState = function (state, title, url) {
+                try { _pushState(state, title, url); } catch (_) {}
+            };
+        }
+
+        if (_replaceState) {
+            history.replaceState = function (state, title, url) {
+                try { _replaceState(state, title, url); } catch (_) {}
+            };
         }
     } catch (_) {}
 
