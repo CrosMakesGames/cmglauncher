@@ -1,358 +1,982 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
 
-```
-<!-- Everything relative resolves against Slow Roads -->
-<base href="https://slowroads.io/">
+    <meta charset="UTF-8">
 
-<!-- Electron defs -->
-<!--
-<meta http-equiv="Content-Security-Policy"
-    content="
-        default-src 'self';
-        script-src 'self' 'unsafe-inline';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data:;
-        font-src 'self';
-        object-src 'none';
-    ">
--->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="icon" href="https://slowroads.io/favicon.svg">
-<link rel="apple-touch-icon" href="https://slowroads.io/apple-touch-icon.png">
+    <title>CMG Launcher</title>
 
-<link
-    rel="preload"
-    href="https://slowroads.io/fonts/Sono.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<link
-    rel="preload"
-    href="https://slowroads.io/fonts/Space.ttf"
-    as="font"
-    type="font/ttf"
-    crossorigin
->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-<link rel="manifest" href="https://slowroads.io/manifest.json">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
 
-<meta name="theme-color" content="#ffffff">
-<meta name="title" content="Slow Roads">
-<meta name="description" content="Endless driving zen">
-<meta name="color-scheme" content="light only">
+    <style>
 
-<!-- Open Graph -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://slowroads.io/">
-<meta property="og:title" content="Slow Roads">
-<meta property="og:description" content="Endless driving zen">
-<meta property="og:image" content="https://slowroads.io/meta-2.4.2.jpg">
+        body, p, a, span, li, button {
 
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:url" content="https://slowroads.io/">
-<meta property="twitter:title" content="Slow Roads">
-<meta property="twitter:description" content="Endless driving zen">
-<meta property="twitter:image" content="https://slowroads.io/meta-2.4.2.jpg">
+            font-family: 'JetBrains Mono', monospace;
 
-<title>&#8202;s&#8202;l&#8202;o&#8202;w&nbsp;&nbsp;r&#8202;o&#8202;a&#8202;d&#8202;s</title>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        if (window.location.hash) {
-            const metas = document.querySelectorAll(
-                'meta[property^="og:"], meta[name^="twitter:"]'
-            );
-
-            metas.forEach(meta => {
-                meta.parentNode.removeChild(meta);
-            });
         }
-    });
-</script>
 
-<style>
-    :root {
-        --sr-white: #F4F2ED;
-        --sr-white-0: #F4F2ED00;
-        --sr-white-25: #F4F2ED40;
-        --sr-white-50: #F4F2ED80;
-        --sr-white-75: #F4F2EDC0;
-        --sr-white-90: #F4F2EDE0;
+        h1, h2, h3 {
 
-        --sr-primary: #343c3e;
-        --sr-primary-0: #343c3e00;
-        --sr-primary-25: #343c3e40;
-        --sr-primary-50: #343c3e80;
-        --sr-primary-75: #343c3eC0;
+            font-family: 'JetBrains Mono', monospace;
 
-        --sr-secondary: #D2D1CD;
-        --sr-secondary-0: #D2D1CD00;
-        --sr-secondary-25: #D2D1CD40;
-        --sr-secondary-50: #D2D1CD80;
-        --sr-secondary-75: #D2D1CDC0;
-        --sr-secondary-90: #D2D1CDEE;
+            font-weight: 800;
 
-        --sr-tertiary: #7e7c76;
-        --sr-tertiary-0: #7e7c7600;
-        --sr-tertiary-25: #7e7c7640;
-        --sr-tertiary-50: #7e7c7680;
-        --sr-tertiary-75: #7e7c76C0;
-        --sr-tertiary-90: #7e7c76EE;
+            line-height: 1.4;
 
-        --sr-warn: #ff992b;
+        }
 
-        --sr-dark: #444444;
-        --sr-darker: #333;
-        --sr-black: #222222;
+        .pixel-font {
 
-        --sr-bg: #F4F2ED;
-        --sr-lowlight: #343c3e80;
+            font-family: 'Press Start 2P', cursive;
 
-        color-scheme: light only;
-    }
+        }
 
-    @font-face {
-        font-family: Sono;
-        src: url("https://slowroads.io/fonts/Sono.ttf");
-        font-variant: slashed-zero;
-    }
+        .pixelated-img {
 
-    @font-face {
-        font-family: Space;
-        src: url("https://slowroads.io/fonts/Space.ttf");
-        font-variant: slashed-zero;
-    }
+            image-rendering: pixelated;
 
-    /* width */
-    ::-webkit-scrollbar {
-        width: 0.6rem;
-    }
+        }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-        background: var(--sr-primary-25);
-    }
+        /* ===== SMALL LAUNCHER BUBBLES ===== */
 
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-        background: var(--sr-primary-50);
-    }
+        .game-bubble {
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--sr-primary);
-    }
+            position: relative;
 
-    * {
-        margin: 0;
-        padding: 0;
-        scroll-behavior: smooth !important;
-        font-variant: slashed-zero;
-    }
+            aspect-ratio: 1;
 
-    body {
-        overflow: hidden;
-        font-family: Space, Helvetica, sans-serif;
-    }
+            border: 2px solid #000;
 
-    img {
-        -webkit-user-drag: none;
-        -khtml-user-drag: none;
-        -moz-user-drag: none;
-        -o-user-drag: none;
-        user-drag: none;
-    }
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
 
-    a {
-        text-decoration: none;
-    }
+            display: flex;
 
-    html {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        font-size: 16px;
-    }
+            flex-direction: column;
 
-    @media screen and (orientation: landscape) and (max-width: 1361px) {
-        html {
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 8px;
+
+            transition: all 0.2s ease;
+
+            text-decoration: none;
+
+            overflow: hidden;
+
+        }
+
+        .game-bubble:hover {
+
+            transform: translate(-2px, -2px);
+
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .game-bubble:active {
+
+            transform: translate(1px, 1px);
+
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .game-bubble.loading {
+
+            filter: grayscale(0.6);
+
+            pointer-events: none;
+
+        }
+
+        /* Top color stripe */
+
+        .game-bubble::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            height: 4px;
+
+            background: var(--bubble-color);
+
+        }
+
+        .bubble-title {
+
+            font-family: 'Press Start 2P', cursive;
+
+            font-size: 8px;
+
+            line-height: 1.4;
+
+            color: #000;
+
+            margin-bottom: 6px;
+
+            margin-top: 5px;
+
+            z-index: 2;
+
+        }
+
+        .bubble-desc {
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+            color: #444;
+
+            flex-grow: 1;
+
+            display: flex;
+
+            align-items: center;
+
+            z-index: 2;
+
+        }
+
+        .bubble-button {
+
+            font-family: 'Press Start 2P', cursive;
+
+            font-size: 6px;
+
+            padding: 4px 8px;
+
+            border: 2px solid #000;
+
+            background: var(--bubble-color);
+
+            color: #000;
+
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+
+            margin-top: 6px;
+
+            z-index: 2;
+
+            transition: all 0.15s;
+
+        }
+
+        .game-bubble:hover .bubble-button {
+
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        /* ===== OTHER SITE INPUT ===== */
+
+        .site-input {
+
+            font-family: 'JetBrains Mono', monospace;
+
+            font-weight: 500;
+
             font-size: 14px;
+
+            padding: 10px 14px;
+
+            border: 3px solid #000;
+
+            background: #fff;
+
+            color: #000;
+
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
+            outline: none;
+
+            flex: 1;
+
+            min-width: 0;
+
         }
-    }
 
-    @media screen and (orientation: landscape) and (max-width: 1180px) {
-        html {
-            font-size: 12px;
+        .site-input:focus {
+
+            background: #FFF8E1;
+
         }
-    }
 
-    @media screen and (orientation: portrait) {
-        html {
-            font-size: 12px;
+        .site-input::placeholder {
+
+            color: #aaa;
+
         }
-    }
-</style>
 
-<!-- Slow Roads dependencies -->
-<script src="https://slowroads.io/alea.min.js"></script>
+        .test-btn {
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/entry/start.7ecbe11d.js"
->
+            font-family: 'JetBrains Mono', monospace;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/chunks/scheduler.05185c5f.js"
->
+            font-weight: 800;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/chunks/singletons.8ffc0db6.js"
->
+            font-size: 14px;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/chunks/index.205d685d.js"
->
+            text-transform: uppercase;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/chunks/control.c2cf8273.js"
->
+            letter-spacing: 0.5px;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/entry/app.df47fc16.js"
->
+            padding: 10px 22px;
 
-<link
-    rel="modulepreload"
-    href="https://slowroads.io/_app/immutable/chunks/index.2e86b85f.js"
->
-```
+            border: 3px solid #000;
+
+            background: #FFD166;
+
+            color: #000;
+
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
+            cursor: pointer;
+
+            transition: all 0.15s ease;
+
+            flex-shrink: 0;
+
+        }
+
+        .test-btn:hover {
+
+            background: #FFDD80;
+
+            transform: translate(-2px, -2px);
+
+            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .test-btn:active {
+
+            transform: translate(2px, 2px);
+
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .test-btn:disabled {
+
+            filter: grayscale(0.6);
+
+            pointer-events: none;
+
+        }
+
+        /* Section divider */
+
+        .section-divider {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            margin: 32px 0 24px;
+
+        }
+
+        .section-divider .line {
+
+            flex: 1;
+
+            height: 3px;
+
+            background: #000;
+
+            border-radius: 2px;
+
+        }
+
+        .section-divider .dot {
+
+            width: 12px;
+
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #000;
+
+        }
+
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0); }
+
+            50% { transform: translateY(-8px); }
+
+        }
+
+        .float-anim {
+
+            animation: float 4s ease-in-out infinite;
+
+        }
+
+    </style>
 
 </head>
 
-<body data-sveltekit-preload-data="hover">
+<body class="bg-[#FDFBF7] text-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
 
-```
-<div style="display: contents">
+<div class="max-w-5xl mx-auto">
 
-    <script>
-        /*
-         * Keep SvelteKit's asset root pointed at Slow Roads.
-         */
-        window.__sveltekit_1jkivi4 = {
-            assets: "https://slowroads.io",
-            base: "",
-            env: {
-                PUBLIC_DRIFTMAS: "false",
-                PUBLIC_ELECTRON: "false"
-            }
-        };
+    <!-- ===== HEADER ===== -->
 
-        const element = document.currentScript.parentElement;
+    <header class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
 
-        Promise.all([
-            import("https://slowroads.io/_app/immutable/entry/start.7ecbe11d.js"),
-            import("https://slowroads.io/_app/immutable/entry/app.df47fc16.js")
-        ]).then(([kit, app]) => {
-            kit.start(app, element);
-        });
-    </script>
+        <img src="https://crosmakesgames.com/logo.png"
+
+             alt="CMG Logo"
+
+             class="w-36 sm:w-28 md:w-40 object-contain pixelated-img float-anim flex-shrink-0"
+
+             onerror="this.style.display='none'">
+
+        <div class="flex-1 flex flex-col justify-center gap-4 pt-2 w-full">
+
+            <h1 class="text-lg sm:text-xl md:text-2xl text-black">CMG Launcher</h1>
+
+            <p class="text-gray-800 text-sm leading-relaxed">
+
+                A simple launcher for my games and other sites. Click a bubble to load the site in a new tab, or test your own site below.
+
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- ===== LAUNCHER ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap" id="section-title">launchers</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div id="bubbles-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
+
+    </div>
+
+    <!-- ===== WEB GAMES ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap" id="webgames-title">web games</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div id="webgames-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
+
+    </div>
+
+    <!-- ===== OTHER SITE ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap">other site?</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 mb-12 items-stretch">
+
+        <input type="text" id="site-input" class="site-input" placeholder="https://example.com" spellcheck="false" autocomplete="off">
+
+        <button class="test-btn" id="test-btn">Test &rarr;</button>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+
+    <footer class="pt-8 mt-8 border-t-4 border-black text-center text-black font-medium">
+
+        CMG Launcher by <a href="https://crosmakesgames.com/" target="_blank" class="font-bold underline decoration-2 underline-offset-2 hover:text-[#FF5C5C]">CrosMakesGames</a>. &copy; 2026.
+
+    </footer>
 
 </div>
 
-<!--
-    IMPORTANT:
-    A service worker belongs to the origin that registers it.
-    Therefore a page hosted on another domain cannot register
-    https://slowroads.io/service-worker.js as its own service worker.
-
-    If this HTML itself is hosted on slowroads.io, you can use:
-
-    <script>
-        if ("serviceWorker" in navigator) {
-            addEventListener("load", function () {
-                navigator.serviceWorker.register(
-                    "https://slowroads.io/service-worker.js"
-                );
-            });
-        }
-    </script>
--->
-
-<!-- Cloudflare client-side challenge script -->
 <script>
-    (function () {
-        function c() {
-            var b =
-                a.contentDocument ||
-                (a.contentWindow && a.contentWindow.document);
+"use strict";
 
-            if (b) {
-                var d = b.createElement("script");
+// ============================================================
+// CMG LAUNCHER — ABOUT:BLANK SOURCE LAUNCHER
+// Uses the same JS fetch engine as Horion to launch sites.
+// ============================================================
 
-                d.innerHTML =
-                    "window.__CF$cv$params={r:'a348c6a59934e6f3',t:'MTc4ODMxMjkwNA=='};" +
-                    "var a=document.createElement('script');" +
-                    "a.src='https://slowroads.io/cdn-cgi/challenge-platform/scripts/jsd/main.js';" +
-                    "document.getElementsByTagName('head')[0].appendChild(a);";
+const LAUNCHER_ITEMS = [
+    {
+        title: "CMG WEB IDE",
+        description: "WIP- code in the web WITH a interpreter for static and love2d.",
+        link: "https://crosmakesgames.com/webide/",
+        button: "Go",
+        color: "#41ADAB"
+    },
+    {
+        title: "crosmakesgames.com",
+        description: "My homepages",
+        link: "https://crosmakesgames.com/",
+        button: "Visit",
+        color: "#FF5C5C"
+    }
+];
 
-                b.getElementsByTagName("head")[0].appendChild(d);
-            }
+const WEB_GAMES = [
+    {
+        title: "Balatro",
+        description: "Poker roguelike deckbuilder. Build synergies and chase unbeatable runs.",
+        link: "https://telatro.tomcat.sh/game",
+        button: "Play",
+        color: "#E63946"
+    }
+];
+
+// ============================================================
+// HORION FETCH ENGINE
+// Try fetch() first, then XMLHttpRequest — some filters block
+// the Fetch API but allow XHR, or vice versa. No proxies, no
+// external APIs — direct fetch attempts only.
+// ============================================================
+
+function setStatus(message, isError = false) {
+    const el = document.getElementById("launcher-status");
+    if (!el) return;
+
+    el.textContent = message;
+    el.classList.toggle("error", isError);
+}
+
+function normalizeUrl(value) {
+    let url = String(value || "").trim();
+
+    if (!url) {
+        throw new Error("No URL was entered.");
+    }
+
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+    }
+
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error("Only HTTP and HTTPS URLs are supported.");
+    }
+
+    return parsed.href;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// Attempt: fetch() with CORS-friendly options.
+// Returns the document text AND the final URL after redirects — the final
+// URL is used as the <base> so relative resources resolve correctly even
+// when the server redirects (e.g. /game -> /game/).
+function fetchText(url) {
+    return fetch(url, {
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        redirect: "follow"
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status + " " + (response.statusText || ""));
         }
+        return response.text().then((text) => ({
+            text: text,
+            finalUrl: response.url || url
+        }));
+    });
+}
 
-        if (document.body) {
-            var a = document.createElement("iframe");
-
-            a.height = 1;
-            a.width = 1;
-            a.style.position = "absolute";
-            a.style.top = 0;
-            a.style.left = 0;
-            a.style.border = "none";
-            a.style.visibility = "hidden";
-
-            document.body.appendChild(a);
-
-            if ("loading" !== document.readyState) {
-                c();
-            } else if (window.addEventListener) {
-                document.addEventListener("DOMContentLoaded", c);
+// Attempt: XMLHttpRequest with a 15s timeout.
+function xhrText(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.timeout = 15000;
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                    text: xhr.responseText,
+                    finalUrl: xhr.responseURL || url
+                });
             } else {
-                var e =
-                    document.onreadystatechange ||
-                    function () {};
+                reject(new Error("XHR HTTP " + xhr.status));
+            }
+        };
+        xhr.onerror = () => reject(new Error("XHR error"));
+        xhr.ontimeout = () => reject(new Error("XHR timeout"));
+        xhr.send();
+    });
+}
 
-                document.onreadystatechange = function (b) {
-                    e(b);
+// Strip our own cache-buster (?t=<timestamp>) from the final URL so the
+// <base> tag stays clean. Only removes a "t" param whose value looks like
+// a millisecond timestamp — a site's own query params are left alone.
+function cleanCacheBustedUrl(u) {
+    try {
+        const parsed = new URL(u);
+        const t = parsed.searchParams.get("t");
+        if (t && /^\d{11,16}$/.test(t)) {
+            parsed.searchParams.delete("t");
+        }
+        return parsed.href;
+    } catch (_) {
+        return u;
+    }
+}
 
-                    if ("loading" !== document.readyState) {
-                        document.onreadystatechange = e;
-                        c();
-                    }
+// Fetch the actual HTML source — Horion engine: fetch with cache-buster,
+// fetch plain, XHR with cache-buster, XHR plain, then CORS proxies.
+async function fetchSiteCode(url) {
+    const bustUrl = url + (url.indexOf("?") !== -1 ? "&" : "?") + "t=" + Date.now();
+
+    const attempts = [
+        () => fetchText(bustUrl),
+        () => fetchText(url),
+        () => xhrText(bustUrl),
+        () => xhrText(url)
+    ];
+
+    let lastError = null;
+
+    for (const attempt of attempts) {
+        try {
+            const result = await attempt();
+            if (result.text && result.text.trim()) {
+                return {
+                    code: result.text,
+                    finalUrl: cleanCacheBustedUrl(result.finalUrl || url)
                 };
             }
+            lastError = new Error("The site returned an empty document.");
+        } catch (error) {
+            lastError = error;
         }
-    })();
+    }
+
+    throw lastError || new Error("All fetch attempts failed.");
+}
+
+// Inject a small compatibility layer before the site's own scripts.
+// This prevents many sites from dying immediately when moved from their
+// original origin into about:blank.
+function buildCompatibilityPrelude() {
+    return `
+<script>
+(function () {
+    "use strict";
+
+    // Some applications attempt to register a Service Worker.
+    // A worker cannot normally be registered for an about:blank document,
+    // so provide a harmless compatibility object instead.
+    try {
+        var fakeRegistration = {
+            scope: "/",
+            active: null,
+            installing: null,
+            waiting: null,
+            pushManager: {
+                getSubscription: function () {
+                    return Promise.resolve(null);
+                },
+                permissionState: function () {
+                    return Promise.resolve("denied");
+                }
+            },
+            unregister: function () {
+                return Promise.resolve(true);
+            },
+            update: function () {
+                return Promise.resolve();
+            }
+        };
+
+        if (!navigator.serviceWorker) {
+            try {
+                Object.defineProperty(navigator, "serviceWorker", {
+                    configurable: true,
+                    value: {}
+                });
+            } catch (_) {}
+        }
+
+        var sw = navigator.serviceWorker;
+
+        if (sw) {
+            try {
+                sw.register = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistration = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistrations = function () {
+                    return Promise.resolve([fakeRegistration]);
+                };
+            } catch (_) {}
+        }
+    } catch (_) {}
+
+    // about:blank has its own origin. These are best-effort compatibility
+    // shims for code that assumes it is running as a normal web document.
+    try {
+        if (!window.requestIdleCallback) {
+            window.requestIdleCallback = function (cb) {
+                return setTimeout(function () {
+                    cb({
+                        didTimeout: false,
+                        timeRemaining: function () { return 50; }
+                    });
+                }, 1);
+            };
+        }
+    } catch (_) {}
+})();
+<\/script>`.trim();
+}
+
+// Remove document-level policies that belong to the original document.
+// HTTP response headers such as CSP/X-Frame-Options do not come across
+// when we inject the HTML ourselves, but CSP <meta> tags do.
+function stripBlockingMeta(html) {
+    return html
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*content-security-policy\s*["']?[^>]*>/gi, "")
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*x-frame-options\s*["']?[^>]*>/gi, "");
+}
+
+// Add a real <base> URL so relative scripts, stylesheets, images, media,
+// links, forms, etc. continue resolving against the source site.
+function patchSiteCode(html, targetUrl) {
+    html = String(html || "").replace(/^\uFEFF/, "");
+    html = stripBlockingMeta(html);
+
+    const baseHref = escapeHtml(targetUrl);
+    const prelude = `<base href="${baseHref}">\n${buildCompatibilityPrelude()}`;
+
+    if (/<head\b[^>]*>/i.test(html)) {
+        return html.replace(/<head\b[^>]*>/i, match => match + "\n" + prelude);
+    }
+
+    if (/<html\b[^>]*>/i.test(html)) {
+        return html.replace(
+            /<html\b[^>]*>/i,
+            match => match + "\n<head>\n" + prelude + "\n</head>"
+        );
+    }
+
+    return "<!DOCTYPE html><html><head>" + prelude + "</head><body>" + html + "</body></html>";
+}
+
+function writeLoadingPage(win, url) {
+    const safeUrl = escapeHtml(url);
+
+    win.document.open();
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CMG Launcher — Loading</title>
+<style>
+html,body{width:100%;height:100%;margin:0}
+body{background:#FDFBF7;display:flex;align-items:center;justify-content:center;
+font-family:"JetBrains Mono",monospace;color:#000}
+.box{border:3px solid #000;box-shadow:6px 6px 0 #000;background:#FFD166;
+padding:22px 28px;font-weight:800;max-width:min(80vw,800px);word-break:break-word}
+.small{font-size:12px;margin-top:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="box">
+    LOADING...
+    <div class="small">${safeUrl}</div>
+</div>
+</body>
+</html>`);
+    win.document.close();
+}
+
+// IMPORTANT:
+// window.open() happens before ANY await. This keeps the operation attached
+// to the user's click and avoids popup blockers.
+function openNewTab(url) {
+    const win = window.open("about:blank", "_blank");
+
+    if (!win || win === window) {
+        alert("Popup blocked! Allow popups for CMG Launcher and try again.");
+        return null;
+    }
+
+    try {
+        writeLoadingPage(win, url);
+    } catch (error) {
+        try { win.close(); } catch (_) {}
+        throw error;
+    }
+
+    return win;
+}
+
+async function launchSite(url) {
+    let target;
+    try {
+        target = normalizeUrl(url);
+    } catch (error) {
+        alert(error.message || String(error));
+        return;
+    }
+
+    // OPEN ABOUT:BLANK FIRST — synchronously from the button click.
+    const win = openNewTab(target);
+    if (!win) return;
+
+    try {
+        // Fetch the site's source with the Horion engine.
+        // finalUrl is the post-redirect URL — use it as the base so
+        // relative resources resolve against where the page REALLY lives.
+        const { code, finalUrl } = await fetchSiteCode(target);
+
+        // Patch relative URLs, service workers, CSP, etc.
+        const patchedCode = patchSiteCode(code, finalUrl);
+
+        // IMPORTANT:
+        // Write the source INTO the existing about:blank window.
+        // DO NOT navigate the window.
+        win.document.open();
+        win.document.write(patchedCode);
+        win.document.close();
+
+    } catch (err) {
+        console.error("CMG Launcher fetch failed:", err);
+
+        // IMPORTANT:
+        // Do NOT fall back to:
+        //     win.location.href = url
+        //
+        // The window must remain about:blank.
+        win.document.open();
+        win.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>CMG Launcher Error</title>
+                <style>
+                    html, body {
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #FDFBF7;
+                        color: #000;
+                        font-family: monospace;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .box {
+                        max-width: 800px;
+                        margin: 20px;
+                        padding: 28px;
+                        border: 3px solid #000;
+                        box-shadow: 6px 6px 0 #000;
+                        background: #fff;
+                    }
+
+                    h1 {
+                        font-size: 18px;
+                    }
+
+                    p {
+                        line-height: 1.6;
+                        word-break: break-word;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="box">
+                    <h1>Unable to launch site</h1>
+                    <p>
+                        The site could not be fetched for about:blank injection.
+                    </p>
+                    <p>${escapeHtml(err.message || String(err))}</p>
+                    <p>Target: ${escapeHtml(target)}</p>
+                </div>
+            </body>
+            </html>
+        `);
+        win.document.close();
+    }
+}
+
+// ============================================================
+// RENDER LAUNCHER / WEB GAME BUBBLES
+// ============================================================
+
+function renderBubbles(container, items) {
+    items.forEach((item) => {
+        const card = document.createElement("a");
+
+        card.href = item.link;
+        card.target = "_blank";
+        card.rel = "noopener";
+        card.className = "game-bubble bg-white";
+        card.style.setProperty("--bubble-color", item.color);
+
+        const title = document.createElement("div");
+        title.className = "bubble-title";
+        title.textContent = item.title;
+
+        const description = document.createElement("p");
+        description.className = "bubble-desc";
+        description.textContent = item.description;
+
+        const button = document.createElement("span");
+        button.className = "bubble-button";
+        button.textContent = item.button + " →";
+
+        card.append(title, description, button);
+
+        card.addEventListener("click", (event) => {
+            // Keep normal middle-click / Ctrl-click / Shift-click behavior.
+            if (
+                event.button !== 0 ||
+                event.ctrlKey ||
+                event.metaKey ||
+                event.shiftKey ||
+                event.altKey
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const original = button.textContent;
+
+            card.classList.add("loading");
+            button.textContent = "LOADING...";
+
+            launchSite(item.link).finally(() => {
+                card.classList.remove("loading");
+                button.textContent = original;
+            });
+        });
+
+        container.appendChild(card);
+    });
+}
+
+const bubbleContainer = document.getElementById("bubbles-container");
+const webGamesContainer = document.getElementById("webgames-container");
+
+renderBubbles(bubbleContainer, LAUNCHER_ITEMS);
+renderBubbles(webGamesContainer, WEB_GAMES);
+
+document.getElementById("section-title").textContent =
+    "launchers (" + LAUNCHER_ITEMS.length + ")";
+
+document.getElementById("webgames-title").textContent =
+    "web games (" + WEB_GAMES.length + ")";
+
+// ============================================================
+// OTHER SITE TESTER
+// ============================================================
+
+const siteInput = document.getElementById("site-input");
+const testBtn = document.getElementById("test-btn");
+
+async function testSite() {
+    const value = siteInput.value.trim();
+
+    if (!value) {
+        siteInput.focus();
+        return;
+    }
+
+    const original = testBtn.textContent;
+
+    testBtn.disabled = true;
+    testBtn.textContent = "LOADING...";
+
+    try {
+        await launchSite(value);
+    } finally {
+        testBtn.disabled = false;
+        testBtn.textContent = original;
+    }
+}
+
+testBtn.addEventListener("click", testSite);
+
+siteInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        testSite();
+    }
+});
+
+siteInput.addEventListener("input", () => {
+    if (siteInput.value.trim()) {
+        setStatus("Ready to launch.");
+    }
+});
+
+setStatus("Ready to launch.");
 </script>
-```
 
 </body>
+
 </html>
