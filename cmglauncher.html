@@ -1,0 +1,1145 @@
+<html lang="en"><head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CMG Launcher</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=JetBrains+Mono:wght@400;500;700;800&amp;display=swap" rel="stylesheet">
+
+    <style>
+
+        body, p, a, span, li, button {
+
+            font-family: 'JetBrains Mono', monospace;
+
+        }
+
+        h1, h2, h3 {
+
+            font-family: 'JetBrains Mono', monospace;
+
+            font-weight: 800;
+
+            line-height: 1.4;
+
+        }
+
+        .pixel-font {
+
+            font-family: 'Press Start 2P', cursive;
+
+        }
+
+        .pixelated-img {
+
+            image-rendering: pixelated;
+
+        }
+
+        /* ===== SMALL LAUNCHER BUBBLES ===== */
+
+        .game-bubble {
+
+            position: relative;
+
+            aspect-ratio: 1;
+
+            border: 2px solid #000;
+
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 8px;
+
+            transition: all 0.2s ease;
+
+            text-decoration: none;
+
+            overflow: hidden;
+
+        }
+
+        .game-bubble:hover {
+
+            transform: translate(-2px, -2px);
+
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .game-bubble:active {
+
+            transform: translate(1px, 1px);
+
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .game-bubble.loading {
+
+            filter: grayscale(0.6);
+
+            pointer-events: none;
+
+        }
+
+        /* Top color stripe */
+
+        .game-bubble::before {
+
+            content: '';
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            height: 4px;
+
+            background: var(--bubble-color);
+
+        }
+
+        .bubble-title {
+
+            font-family: 'Press Start 2P', cursive;
+
+            font-size: 8px;
+
+            line-height: 1.4;
+
+            color: #000;
+
+            margin-bottom: 6px;
+
+            margin-top: 5px;
+
+            z-index: 2;
+
+        }
+
+        .bubble-desc {
+
+            font-size: 10px;
+
+            line-height: 1.4;
+
+            color: #444;
+
+            flex-grow: 1;
+
+            display: flex;
+
+            align-items: center;
+
+            z-index: 2;
+
+        }
+
+        .bubble-button {
+
+            font-family: 'Press Start 2P', cursive;
+
+            font-size: 6px;
+
+            padding: 4px 8px;
+
+            border: 2px solid #000;
+
+            background: var(--bubble-color);
+
+            color: #000;
+
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+
+            margin-top: 6px;
+
+            z-index: 2;
+
+            transition: all 0.15s;
+
+        }
+
+        .game-bubble:hover .bubble-button {
+
+            box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        /* ===== OTHER SITE INPUT ===== */
+
+        .site-input {
+
+            font-family: 'JetBrains Mono', monospace;
+
+            font-weight: 500;
+
+            font-size: 14px;
+
+            padding: 10px 14px;
+
+            border: 3px solid #000;
+
+            background: #fff;
+
+            color: #000;
+
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
+            outline: none;
+
+            flex: 1;
+
+            min-width: 0;
+
+        }
+
+        .site-input:focus {
+
+            background: #FFF8E1;
+
+        }
+
+        .site-input::placeholder {
+
+            color: #aaa;
+
+        }
+
+        .test-btn {
+
+            font-family: 'JetBrains Mono', monospace;
+
+            font-weight: 800;
+
+            font-size: 14px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            padding: 10px 22px;
+
+            border: 3px solid #000;
+
+            background: #FFD166;
+
+            color: #000;
+
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+
+            cursor: pointer;
+
+            transition: all 0.15s ease;
+
+            flex-shrink: 0;
+
+        }
+
+        .test-btn:hover {
+
+            background: #FFDD80;
+
+            transform: translate(-2px, -2px);
+
+            box-shadow: 6px 6px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .test-btn:active {
+
+            transform: translate(2px, 2px);
+
+            box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+
+        }
+
+        .test-btn:disabled {
+
+            filter: grayscale(0.6);
+
+            pointer-events: none;
+
+        }
+
+        /* Section divider */
+
+        .section-divider {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            margin: 32px 0 24px;
+
+        }
+
+        .section-divider .line {
+
+            flex: 1;
+
+            height: 3px;
+
+            background: #000;
+
+            border-radius: 2px;
+
+        }
+
+        .section-divider .dot {
+
+            width: 12px;
+
+            height: 12px;
+
+            border-radius: 50%;
+
+            background: #000;
+
+        }
+
+        @keyframes float {
+
+            0%, 100% { transform: translateY(0); }
+
+            50% { transform: translateY(-8px); }
+
+        }
+
+        .float-anim {
+
+            animation: float 4s ease-in-out infinite;
+
+        }
+
+    </style>
+
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.mx-auto{margin-left:auto;margin-right:auto}.mb-12{margin-bottom:3rem}.mb-6{margin-bottom:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.grid{display:grid}.min-h-screen{min-height:100vh}.w-36{width:9rem}.w-full{width:100%}.max-w-5xl{max-width:64rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.items-stretch{align-items:stretch}.justify-center{justify-content:center}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.whitespace-nowrap{white-space:nowrap}.border-t-4{border-top-width:4px}.border-black{--tw-border-opacity:1;border-color:rgb(0 0 0 / var(--tw-border-opacity, 1))}.bg-\[\#FDFBF7\]{--tw-bg-opacity:1;background-color:rgb(253 251 247 / var(--tw-bg-opacity, 1))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.object-contain{object-fit:contain}.px-4{padding-left:1rem;padding-right:1rem}.py-12{padding-top:3rem;padding-bottom:3rem}.pt-2{padding-top:0.5rem}.pt-8{padding-top:2rem}.text-center{text-align:center}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.leading-relaxed{line-height:1.625}.text-black{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.decoration-2{text-decoration-thickness:2px}.underline-offset-2{text-underline-offset:2px}.hover\:text-\[\#FF5C5C\]:hover{--tw-text-opacity:1;color:rgb(255 92 92 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:w-28{width:7rem}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-start{align-items:flex-start}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:w-40{width:10rem}.md\:grid-cols-5{grid-template-columns:repeat(5, minmax(0, 1fr))}.md\:text-2xl{font-size:1.5rem;line-height:2rem}}@media (min-width: 1024px){.lg\:px-8{padding-left:2rem;padding-right:2rem}}</style></head>
+
+<body class="bg-[#FDFBF7] text-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+
+<div class="max-w-5xl mx-auto">
+
+    <!-- ===== HEADER ===== -->
+
+    <header class="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
+
+        <img src="https://crosmakesgames.com/logo.png" alt="CMG Logo" class="w-36 sm:w-28 md:w-40 object-contain pixelated-img float-anim flex-shrink-0" onerror="this.style.display='none'">
+
+        <div class="flex-1 flex flex-col justify-center gap-4 pt-2 w-full">
+
+            <h1 class="text-lg sm:text-xl md:text-2xl text-black">CMG Launcher</h1>
+
+            <p class="text-gray-800 text-sm leading-relaxed">
+
+                A simple launcher for my games and other sites. Click a bubble to load the site in a new tab, or test your own site below.
+
+            </p>
+
+        </div>
+
+    </header>
+
+    <!-- ===== LAUNCHER ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap" id="section-title">launchers (3)</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div id="bubbles-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
+    </div>
+
+    <!-- ===== WEB GAMES ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap" id="webgames-title">web games (2)</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div id="webgames-container" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mb-12">
+    </div>
+
+    <!-- ===== OTHER SITE ===== -->
+
+    <div class="section-divider">
+
+        <span class="dot"></span>
+
+        <h2 class="text-sm sm:text-base text-black whitespace-nowrap">other site?</h2>
+
+        <span class="line"></span>
+
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 mb-12 items-stretch">
+
+        <input type="text" id="site-input" class="site-input" placeholder="https://example.com" spellcheck="false" autocomplete="off">
+
+        <button class="test-btn" id="test-btn">Test →</button>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+
+    <footer class="pt-8 mt-8 border-t-4 border-black text-center text-black font-medium">
+
+        CMG Launcher by <a href="https://crosmakesgames.com/" target="_blank" class="font-bold underline decoration-2 underline-offset-2 hover:text-[#FF5C5C]">CrosMakesGames</a>. © 2026.
+
+    </footer>
+
+</div>
+
+<script>
+"use strict";
+
+// ============================================================
+// CMG LAUNCHER — ABOUT:BLANK SOURCE LAUNCHER
+// Uses the same JS fetch engine as Horion to launch sites.
+// ============================================================
+
+const LAUNCHER_ITEMS = [
+        {
+        title: "Veridium School Instance",
+        description: "TV steaming site that SHOULD work at school but we never know.",
+        link: "https://cdn.jsdelivr.net/gh/CrosMakesGames/veridium-school-instance@main/index.html",
+        button: "Watch",
+        color: "#8B5CF6"
+    },
+        {
+        title: "horion DATABASE",
+        description: "Play lots of diffrent browser games.",
+        link: "https://cdn.jsdelivr.net/gh/CrosMakesGames/horion-database@main/index.html",
+        button: "Play",
+        color: "#16d6e0"
+    },
+    {
+        title: "crosmakesgames.com",
+        description: "My homepages",
+        link: "https://crosmakesgames.com/",
+        button: "Visit",
+        color: "#FF5C5C"
+    },
+];
+
+const WEB_GAMES = [
+    {
+        title: "Balatro",
+        description: "Poker roguelike deckbuilder. Build synergies and chase unbeatable runs.",
+        link: "https://telatro.tomcat.sh/game",
+        button: "Play",
+        color: "#E63946"
+    },
+    {
+        title: "Slowroads",
+        description: "Endless procedural driving. Just you, the road, and the scenery.",
+        link: "https://cdn.jsdelivr.net/gh/CrosMakesGames/fastdrives@main/index.html",
+        button: "Play",
+        color: "#06D6A0"
+    }
+];
+
+// ============================================================
+// HORION FETCH ENGINE
+// Try fetch() first, then XMLHttpRequest — some filters block
+// the Fetch API but allow XHR, or vice versa. No proxies, no
+// external APIs — direct fetch attempts only.
+// ============================================================
+
+function setStatus(message, isError = false) {
+    const el = document.getElementById("launcher-status");
+    if (!el) return;
+
+    el.textContent = message;
+    el.classList.toggle("error", isError);
+}
+
+function normalizeUrl(value) {
+    let url = String(value || "").trim();
+
+    if (!url) {
+        throw new Error("No URL was entered.");
+    }
+
+    if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+    }
+
+    const parsed = new URL(url);
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error("Only HTTP and HTTPS URLs are supported.");
+    }
+
+    return parsed.href;
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+// Attempt: fetch() with CORS-friendly options.
+// Returns the document text AND the final URL after redirects — the final
+// URL is used as the <base> so relative resources resolve correctly even
+// when the server redirects (e.g. /game -> /game/).
+function fetchText(url) {
+    return fetch(url, {
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        redirect: "follow"
+    }).then((response) => {
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status + " " + (response.statusText || ""));
+        }
+        return response.text().then((text) => ({
+            text: text,
+            finalUrl: response.url || url
+        }));
+    });
+}
+
+// Attempt: XMLHttpRequest with a 15s timeout.
+function xhrText(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.timeout = 15000;
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                    text: xhr.responseText,
+                    finalUrl: xhr.responseURL || url
+                });
+            } else {
+                reject(new Error("XHR HTTP " + xhr.status));
+            }
+        };
+        xhr.onerror = () => reject(new Error("XHR error"));
+        xhr.ontimeout = () => reject(new Error("XHR timeout"));
+        xhr.send();
+    });
+}
+
+// Strip our own cache-buster (?t=<timestamp>) from the final URL so the
+// <base> tag stays clean. Only removes a "t" param whose value looks like
+// a millisecond timestamp — a site's own query params are left alone.
+function cleanCacheBustedUrl(u) {
+    try {
+        const parsed = new URL(u);
+        const t = parsed.searchParams.get("t");
+        if (t && /^\d{11,16}$/.test(t)) {
+            parsed.searchParams.delete("t");
+        }
+        return parsed.href;
+    } catch (_) {
+        return u;
+    }
+}
+
+// Fetch the actual HTML source — Horion engine: fetch with cache-buster,
+// fetch plain, XHR with cache-buster, XHR plain, then CORS proxies.
+async function fetchSiteCode(url) {
+    const bustUrl = url + (url.indexOf("?") !== -1 ? "&" : "?") + "t=" + Date.now();
+
+    const attempts = [
+        () => fetchText(bustUrl),
+        () => fetchText(url),
+        () => xhrText(bustUrl),
+        () => xhrText(url)
+    ];
+
+    let lastError = null;
+
+    for (const attempt of attempts) {
+        try {
+            const result = await attempt();
+            if (result.text && result.text.trim()) {
+                return {
+                    code: result.text,
+                    finalUrl: cleanCacheBustedUrl(result.finalUrl || url)
+                };
+            }
+            lastError = new Error("The site returned an empty document.");
+        } catch (error) {
+            lastError = error;
+        }
+    }
+
+    throw lastError || new Error("All fetch attempts failed.");
+}
+
+// Inject a small compatibility layer before the site's own scripts.
+// This prevents many sites from dying immediately when moved from their
+// original origin into about:blank.
+function buildCompatibilityPrelude() {
+    return `
+<script>
+(function () {
+    "use strict";
+
+    // Some applications attempt to register a Service Worker.
+    // A worker cannot normally be registered for an about:blank document,
+    // so provide a harmless compatibility object instead.
+    try {
+        var fakeRegistration = {
+            scope: "/",
+            active: null,
+            installing: null,
+            waiting: null,
+            pushManager: {
+                getSubscription: function () {
+                    return Promise.resolve(null);
+                },
+                permissionState: function () {
+                    return Promise.resolve("denied");
+                }
+            },
+            unregister: function () {
+                return Promise.resolve(true);
+            },
+            update: function () {
+                return Promise.resolve();
+            }
+        };
+
+        if (!navigator.serviceWorker) {
+            try {
+                Object.defineProperty(navigator, "serviceWorker", {
+                    configurable: true,
+                    value: {}
+                });
+            } catch (_) {}
+        }
+
+        var sw = navigator.serviceWorker;
+
+        if (sw) {
+            try {
+                sw.register = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistration = function () {
+                    return Promise.resolve(fakeRegistration);
+                };
+            } catch (_) {}
+
+            try {
+                sw.getRegistrations = function () {
+                    return Promise.resolve([fakeRegistration]);
+                };
+            } catch (_) {}
+        }
+    } catch (_) {}
+
+    // history.pushState/replaceState throw a SecurityError in an
+    // about:blank document (opaque origin). Some SPAs (SvelteKit, React
+    // Router, etc.) call these during navigation and would crash. Wrap
+    // them so failed calls are swallowed instead of killing the app.
+    try {
+        var _pushState = history.pushState ? history.pushState.bind(history) : null;
+        var _replaceState = history.replaceState ? history.replaceState.bind(history) : null;
+
+        if (_pushState) {
+            history.pushState = function (state, title, url) {
+                try { _pushState(state, title, url); } catch (_) {}
+            };
+        }
+
+        if (_replaceState) {
+            history.replaceState = function (state, title, url) {
+                try { _replaceState(state, title, url); } catch (_) {}
+            };
+        }
+    } catch (_) {}
+
+    // about:blank has its own origin. These are best-effort compatibility
+    // shims for code that assumes it is running as a normal web document.
+    try {
+        if (!window.requestIdleCallback) {
+            window.requestIdleCallback = function (cb) {
+                return setTimeout(function () {
+                    cb({
+                        didTimeout: false,
+                        timeRemaining: function () { return 50; }
+                    });
+                }, 1);
+            };
+        }
+    } catch (_) {}
+})();
+<\/script>`.trim();
+}
+
+// Veridium School Instance is a multi-page app hosted on jsDelivr, and
+// jsDelivr serves .html files as text/plain with nosniff — navigating
+// directly between its pages (index.html, featured.html, player.html?id=...)
+// would show raw code instead of rendering. This prelude keeps internal
+// navigation inside the fetch pipeline: clicks on same-directory .html
+// links are fetched, given a fresh <base>, and written back into the same
+// window. ?query= params are emulated via a URLSearchParams shim because
+// the about:blank document has no real query string.
+function buildVeridiumMultipagePrelude(dir) {
+    const dirJson = JSON.stringify(String(dir || ""));
+
+    return `
+<script>
+(function () {
+    "use strict";
+
+    var DIR = ${dirJson};
+
+    try {
+        var me = document.currentScript;
+        if (me && me.textContent) { window.__vrdmShimSrc = me.textContent; }
+    } catch (_) {}
+
+    var VQ = "";
+    try { VQ = String(window.__vrdmQuery || ""); } catch (_) { VQ = ""; }
+
+    if (VQ) {
+        try {
+            var RealUSP = window.URLSearchParams;
+            function ShimUSP(init) {
+                var t = (init === undefined || init === null) ? "" : String(init);
+                // Read the CURRENT query each call: the patched constructor
+                // survives document.write, so a stale captured value would
+                // leak old params onto other pages.
+                var current = "";
+                try { current = String(window.__vrdmQuery || ""); } catch (_) { current = ""; }
+                if (current && (t === "" || t === window.location.search)) {
+                    return new RealUSP(current);
+                }
+                return new RealUSP(init);
+            }
+            ShimUSP.prototype = RealUSP.prototype;
+            window.URLSearchParams = ShimUSP;
+        } catch (_) {}
+        try { window.history.replaceState = function () {}; } catch (_) {}
+    }
+
+    document.addEventListener("click", function (e) {
+        var node = e.target;
+        while (node && node.tagName !== "A") { node = node.parentElement; }
+        if (!node || !node.getAttribute) return;
+        if ((node.getAttribute("target") || "") === "_blank") return;
+        var href = node.getAttribute("href") || "";
+        if (!href || /^(https?:|mailto:|tel:|javascript:|data:|#)/i.test(href)) return;
+
+        var full = "";
+        try { full = new URL(node.href, document.baseURI).href; } catch (_) { return; }
+        if (String(full).indexOf(DIR) !== 0) return;
+        if (!/\\.html?($|\\?|#)/i.test(full)) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var u;
+        try { u = new URL(full); } catch (_) { return; }
+
+        var pageUrl = u.origin + u.pathname;
+        var q = (u.search || "").replace(/^\\?/, "");
+
+        fetch(pageUrl + "?t=" + Date.now())
+            .then(function (r) {
+                if (!r.ok) { throw new Error("HTTP " + r.status); }
+                return r.text();
+            })
+            .then(function (html) {
+                var out = String(html)
+                    .replace(/<meta\\b[^>]*http-equiv\\s*=\\s*["']?\\s*content-security-policy\\s*["']?[^>]*>/gi, "")
+                    .replace(/<meta\\b[^>]*http-equiv\\s*=\\s*["']?\\s*x-frame-options\\s*["']?[^>]*>/gi, "")
+                    .replace(/<base[^>]*>/gi, "")
+                    .replace(/<\\/\\s*base\\s*>/gi, "");
+
+                var inject = '<base href="' + pageUrl + '">';
+
+                var src = "";
+                try { src = String(window.__vrdmShimSrc || ""); } catch (_) { src = ""; }
+                if (src) { inject += "<scr" + "ipt>" + src + "</scr" + "ipt>"; }
+
+                if (/<head\\b[^>]*>/i.test(out)) {
+                    out = out.replace(/<head\\b[^>]*>/i, function (m) { return m + "\\n" + inject; });
+                } else if (/<html\\b[^>]*>/i.test(out)) {
+                    out = out.replace(/<html\\b[^>]*>/i, function (m) { return m + "\\n<head>\\n" + inject + "\\n</head>"; });
+                } else {
+                    out = "<!DOCTYPE html><html><head>" + inject + "</head><body>" + out + "</body></html>";
+                }
+
+                window.__vrdmQuery = q;
+                document.open();
+                document.write(out);
+                document.close();
+                window.scrollTo(0, 0);
+            })
+            .catch(function (err) {
+                try {
+                    var msg = "Unknown error";
+                    if (err && err.message) { msg = String(err.message); }
+                    document.open();
+                    document.write("<!DOCTYPE html><html><head><meta charset=\\"UTF-8\\"></head><body style=\\"margin:0;background:#0a0410;color:#fff;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center\\"><div><h2 style=\\"color:#ff6b6b\\">Failed to load page</h2><p style=\\"color:#888\\">" + msg + "</p></div></body></html>");
+                    document.close();
+                } catch (_) {}
+            });
+    }, true);
+
+    // Middle-click on internal page links would open the raw CDN text in a
+    // new tab (jsDelivr serves .html as text/plain), so block it and let the
+    // user use the page normally instead.
+    document.addEventListener("auxclick", function (e) {
+        if (e.button !== 1) return;
+        var node = e.target;
+        while (node && node.tagName !== "A") { node = node.parentElement; }
+        if (!node || !node.getAttribute) return;
+        var full = "";
+        try { full = new URL(node.href, document.baseURI).href; } catch (_) { return; }
+        if (String(full).indexOf(DIR) !== 0) return;
+        if (!/\\.html?($|\\?|#)/i.test(full)) return;
+        e.preventDefault();
+        e.stopPropagation();
+    }, true);
+})();
+<\/script>`.trim();
+}
+
+// Remove document-level policies that belong to the original document.
+// HTTP response headers such as CSP/X-Frame-Options do not come across
+// when we inject the HTML ourselves, but CSP <meta> tags do.
+function stripBlockingMeta(html) {
+    return html
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*content-security-policy\s*["']?[^>]*>/gi, "")
+        .replace(/<meta\b[^>]*http-equiv\s*=\s*["']?\s*x-frame-options\s*["']?[^>]*>/gi, "");
+}
+
+// Add a real <base> URL so relative scripts, stylesheets, images, media,
+// links, forms, etc. continue resolving against the source site.
+function patchSiteCode(html, targetUrl) {
+    html = String(html || "").replace(/^\uFEFF/, "");
+    html = stripBlockingMeta(html);
+
+    const baseHref = escapeHtml(targetUrl);
+
+    // Multi-page apps on jsDelivr (Veridium School Instance) cannot navigate
+    // directly between .html pages, so they get an extra prelude that keeps
+    // internal navigation inside the fetch pipeline.
+    const veridiumMatch = String(targetUrl || "").match(/^https?:\/\/cdn\.jsdelivr\.net\/gh\/CrosMakesGames\/veridium-school-instance@[^/]+\//i);
+    const extraPrelude = veridiumMatch ? buildVeridiumMultipagePrelude(veridiumMatch[0]) : "";
+
+    const prelude = `<base href="${baseHref}">\n${buildCompatibilityPrelude()}` +
+        (extraPrelude ? "\n" + extraPrelude : "");
+
+    if (/<head\b[^>]*>/i.test(html)) {
+        return html.replace(/<head\b[^>]*>/i, match => match + "\n" + prelude);
+    }
+
+    if (/<html\b[^>]*>/i.test(html)) {
+        return html.replace(
+            /<html\b[^>]*>/i,
+            match => match + "\n<head>\n" + prelude + "\n</head>"
+        );
+    }
+
+    return "<!DOCTYPE html><html><head>" + prelude + "</head><body>" + html + "</body></html>";
+}
+
+function writeLoadingPage(win, url) {
+    const safeUrl = escapeHtml(url);
+
+    win.document.open();
+    win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CMG Launcher — Loading</title>
+<style>
+html,body{width:100%;height:100%;margin:0}
+body{background:#FDFBF7;display:flex;align-items:center;justify-content:center;
+font-family:"JetBrains Mono",monospace;color:#000}
+.box{border:3px solid #000;box-shadow:6px 6px 0 #000;background:#FFD166;
+padding:22px 28px;font-weight:800;max-width:min(80vw,800px);word-break:break-word}
+.small{font-size:12px;margin-top:10px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="box">
+    LOADING...
+    <div class="small">${safeUrl}</div>
+</div>
+</body>
+</html>`);
+    win.document.close();
+}
+
+// IMPORTANT:
+// window.open() happens before ANY await. This keeps the operation attached
+// to the user's click and avoids popup blockers.
+function openNewTab(url) {
+    const win = window.open("about:blank", "_blank");
+
+    if (!win || win === window) {
+        alert("Popup blocked! Allow popups for CMG Launcher and try again.");
+        return null;
+    }
+
+    try {
+        writeLoadingPage(win, url);
+    } catch (error) {
+        try { win.close(); } catch (_) {}
+        throw error;
+    }
+
+    return win;
+}
+
+async function launchSite(url) {
+    let target;
+    try {
+        target = normalizeUrl(url);
+    } catch (error) {
+        alert(error.message || String(error));
+        return;
+    }
+
+    // OPEN ABOUT:BLANK FIRST — synchronously from the button click.
+    const win = openNewTab(target);
+    if (!win) return;
+
+    try {
+        // Fetch the site's source with the Horion engine.
+        // finalUrl is the post-redirect URL — use it as the base so
+        // relative resources resolve against where the page REALLY lives.
+        const { code, finalUrl } = await fetchSiteCode(target);
+
+        // Patch relative URLs, service workers, CSP, etc.
+        const patchedCode = patchSiteCode(code, finalUrl);
+
+        // IMPORTANT:
+        // Write the source INTO the existing about:blank window.
+        // DO NOT navigate the window.
+        win.document.open();
+        win.document.write(patchedCode);
+        win.document.close();
+
+    } catch (err) {
+        console.error("CMG Launcher fetch failed:", err);
+
+        // IMPORTANT:
+        // Do NOT fall back to:
+        //     win.location.href = url
+        //
+        // The window must remain about:blank.
+        win.document.open();
+        win.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>CMG Launcher Error</title>
+                <style>
+                    html, body {
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: #FDFBF7;
+                        color: #000;
+                        font-family: monospace;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .box {
+                        max-width: 800px;
+                        margin: 20px;
+                        padding: 28px;
+                        border: 3px solid #000;
+                        box-shadow: 6px 6px 0 #000;
+                        background: #fff;
+                    }
+
+                    h1 {
+                        font-size: 18px;
+                    }
+
+                    p {
+                        line-height: 1.6;
+                        word-break: break-word;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="box">
+                    <h1>Unable to launch site</h1>
+                    <p>
+                        The site could not be fetched for about:blank injection.
+                    </p>
+                    <p>${escapeHtml(err.message || String(err))}</p>
+                    <p>Target: ${escapeHtml(target)}</p>
+                </div>
+            </body>
+            </html>
+        `);
+        win.document.close();
+    }
+}
+
+// ============================================================
+// RENDER LAUNCHER / WEB GAME BUBBLES
+// ============================================================
+
+function renderBubbles(container, items) {
+    items.forEach((item) => {
+        const card = document.createElement("a");
+
+        card.href = item.link;
+        card.target = "_blank";
+        card.rel = "noopener";
+        card.className = "game-bubble bg-white";
+        card.style.setProperty("--bubble-color", item.color);
+
+        const title = document.createElement("div");
+        title.className = "bubble-title";
+        title.textContent = item.title;
+
+        const description = document.createElement("p");
+        description.className = "bubble-desc";
+        description.textContent = item.description;
+
+        const button = document.createElement("span");
+        button.className = "bubble-button";
+        button.textContent = item.button + " →";
+
+        card.append(title, description, button);
+
+        card.addEventListener("click", (event) => {
+            // Keep normal middle-click / Ctrl-click / Shift-click behavior.
+            if (
+                event.button !== 0 ||
+                event.ctrlKey ||
+                event.metaKey ||
+                event.shiftKey ||
+                event.altKey
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const original = button.textContent;
+
+            card.classList.add("loading");
+            button.textContent = "LOADING...";
+
+            launchSite(item.link).finally(() => {
+                card.classList.remove("loading");
+                button.textContent = original;
+            });
+        });
+
+        container.appendChild(card);
+    });
+}
+
+const bubbleContainer = document.getElementById("bubbles-container");
+const webGamesContainer = document.getElementById("webgames-container");
+
+renderBubbles(bubbleContainer, LAUNCHER_ITEMS);
+renderBubbles(webGamesContainer, WEB_GAMES);
+
+document.getElementById("section-title").textContent =
+    "launchers (" + LAUNCHER_ITEMS.length + ")";
+
+document.getElementById("webgames-title").textContent =
+    "web games (" + WEB_GAMES.length + ")";
+
+// ============================================================
+// OTHER SITE TESTER
+// ============================================================
+
+const siteInput = document.getElementById("site-input");
+const testBtn = document.getElementById("test-btn");
+
+async function testSite() {
+    const value = siteInput.value.trim();
+
+    if (!value) {
+        siteInput.focus();
+        return;
+    }
+
+    const original = testBtn.textContent;
+
+    testBtn.disabled = true;
+    testBtn.textContent = "LOADING...";
+
+    try {
+        await launchSite(value);
+    } finally {
+        testBtn.disabled = false;
+        testBtn.textContent = original;
+    }
+}
+
+testBtn.addEventListener("click", testSite);
+
+siteInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        testSite();
+    }
+});
+
+siteInput.addEventListener("input", () => {
+    if (siteInput.value.trim()) {
+        setStatus("Ready to launch.");
+    }
+});
+
+setStatus("Ready to launch.");
+</script>
+
+
+
+
+</body></html>
