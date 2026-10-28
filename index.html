@@ -354,7 +354,7 @@
 
             <p class="text-gray-800 text-sm leading-relaxed">
 
-                New unblocked zone update. Thats cool i guess.
+                The horion era is over. Use this launcher to launch all of my games/apps with some others too.
 
             </p>
 
@@ -429,19 +429,21 @@
 // CMG LAUNCHER — ABOUT:BLANK SOURCE LAUNCHER
 // Uses the same JS fetch engine as Horion to launch sites.
 // ============================================================
-//UNBLOCKED ZONE entry point (service-worker app): https://cdn.jsdelivr.net/gh/s0n-1m-cr1n3/sc13nc3@main/index.svg
+//UNBLOCKED ZONE is pinned to its last pre-pr0xy build: https://cdn.jsdelivr.net/gh/s0n-1m-cr1n3/sc13nc3@b281fe5cdd9881f81d63cf312953ee1ddf3bb163/assets/index.html
 const LAUNCHER_ITEMS = [
     {
             title: "unblocked ZONE.",
             description: "Use as a replacement for Horion. The Horion era is over, this is my last gift.",
-            // UNBLOCKED ZONE is a service-worker proxy app, not a single-file page.
-            // Its real entry is index.svg: it boots, registers its service worker,
-            // and serves itself as app.html. assets/index.html is only an inner page
-            // and cannot run inside an about:blank injection, so this one opens
-            // directly in a new tab instead of going through the fetch engine.
-            link: "https://cdn.jsdelivr.net/gh/s0n-1m-cr1n3/sc13nc3@main/index.svg?v=20261024-1",
+            // UNBLOCKED ZONE (s0n-1m-cr1n3/sc13nc3) was a normal games hub until the
+            // 2026-10-22 "Create sw.js" update turned it into a service-worker pr0xy
+            // app. That build cannot run in an injected about:blank window: it finds
+            // navigator.serviceWorker.controller === null and swaps its own UI for a
+            // fixed black #cdn-proxy-overlay (the black screen). This pin is the last
+            // commit before that update, so the old page and the old search bar are
+            // back, and it injects like every other bubble here.
+            // Pinned to a commit on purpose - do not move it to @main.
+            link: "https://cdn.jsdelivr.net/gh/s0n-1m-cr1n3/sc13nc3@b281fe5cdd9881f81d63cf312953ee1ddf3bb163/assets/index.html",
             button: "Play",
-            direct: true,
             color: "#CC5500"
         },
     {
@@ -1068,13 +1070,6 @@ function renderBubbles(container, items) {
                 event.shiftKey ||
                 event.altKey
             ) {
-                return;
-            }
-
-            // Direct items cannot run from an injected about:blank document
-            // (they need their own origin and a service worker), so let the
-            // browser open them normally in a new tab.
-            if (item.direct) {
                 return;
             }
 
